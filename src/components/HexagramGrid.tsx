@@ -1,4 +1,3 @@
-import { trigramUnicodeMap } from "../data";
 import { useHexagrams } from "../providers/hexagramProvider";
 import { Hexagram } from "../types";
 
@@ -13,8 +12,8 @@ const HexagramCell: React.FC<{ hexagram: Hexagram }> = ({ hexagram }) => {
       <div>{hexagram.id}</div>
       <div>{hexagram.name}</div>
       <div className="flex flex-col">
-        <div>{trigramUnicodeMap[hexagram.upperTrigram.name]}</div>
-        <div>{trigramUnicodeMap[hexagram.lowerTrigram.name]}</div>
+        <div>{hexagram.upperTrigram.symbol}</div>
+        <div>{hexagram.lowerTrigram.symbol}</div>
       </div>
     </div>
   );

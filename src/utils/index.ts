@@ -1,3 +1,4 @@
+import { trigrams } from "../data";
 import { Hexagram, HexagramData, Line, Relationships, Trigram } from "../types";
 
 // Function to find a hexagram by its lines
@@ -145,15 +146,10 @@ function createHexagram(
   hexagrams: Hexagram[],
   data: HexagramData
 ): Hexagram {
-  const upperTrigram: Trigram = {
-    name: getTrigramName(lines[0], lines[1], lines[2]),
-    lines: [lines[0], lines[1], lines[2]],
-  };
-
-  const lowerTrigram: Trigram = {
-    name: getTrigramName(lines[3], lines[4], lines[5]),
-    lines: [lines[3], lines[4], lines[5]],
-  };
+  const upperTrigramName = getTrigramName(lines[0], lines[1], lines[2]);
+  const lowerTrigramName = getTrigramName(lines[3], lines[4], lines[5]);
+  const upperTrigram: Trigram = trigrams[upperTrigramName];
+  const lowerTrigram: Trigram = trigrams[lowerTrigramName];
 
   const hexagram: Hexagram = {
     id,
@@ -161,10 +157,11 @@ function createHexagram(
     lines,
     upperTrigram,
     lowerTrigram,
-    relationships: {} as Relationships, // Placeholder to be filled in by the factory
+    relationships: {} as Relationships, // Placeholder to be filled in below
     data: data || {},
   };
 
+  // Populate the relationships
   hexagram.relationships = {
     inverse: getInverse(hexagram, hexagrams),
     opposite: getOpposite(hexagram, hexagrams),
@@ -195,23 +192,19 @@ export function addDataToHexagram(
   hexagram.data[key] = value;
 }
 
+export function getDataFromHexagram(hexagram: Hexagram, key: string): any {
+  return hexagram.data?.[key];
+}
+
 function getTrigramName(line1: Line, line2: Line, line3: Line): string {
-  if (line1 === "Yang" && line2 === "Yang" && line3 === "Yang")
-    return "Qian (Heaven)";
-  if (line1 === "Yin" && line2 === "Yin" && line3 === "Yin")
-    return "Kun (Earth)";
-  if (line1 === "Yang" && line2 === "Yin" && line3 === "Yin")
-    return "Zhen (Thunder)";
-  if (line1 === "Yin" && line2 === "Yang" && line3 === "Yang")
-    return "Kan (Water)";
-  if (line1 === "Yin" && line2 === "Yin" && line3 === "Yang")
-    return "Gen (Mountain)";
-  if (line1 === "Yang" && line2 === "Yang" && line3 === "Yin")
-    return "Xun (Wind)";
-  if (line1 === "Yang" && line2 === "Yin" && line3 === "Yang")
-    return "Li (Fire)";
-  if (line1 === "Yin" && line2 === "Yang" && line3 === "Yin")
-    return "Dui (Lake)";
+  if (line1 === "Yang" && line2 === "Yang" && line3 === "Yang") return "Qian";
+  if (line1 === "Yin" && line2 === "Yin" && line3 === "Yin") return "Kun";
+  if (line1 === "Yang" && line2 === "Yin" && line3 === "Yin") return "Zhen";
+  if (line1 === "Yin" && line2 === "Yang" && line3 === "Yang") return "Kan";
+  if (line1 === "Yin" && line2 === "Yin" && line3 === "Yang") return "Gen";
+  if (line1 === "Yang" && line2 === "Yang" && line3 === "Yin") return "Xun";
+  if (line1 === "Yang" && line2 === "Yin" && line3 === "Yang") return "Li";
+  if (line1 === "Yin" && line2 === "Yang" && line3 === "Yin") return "Dui";
 
   return "Unknown";
 }
@@ -298,4 +291,95 @@ export function getShadow(
     (line) => (line === "Yang" ? "Yin" : "Yang")
   ) as [Line, Line, Line, Line, Line, Line];
   return findHexagramByLines(shadowLines, hexagrams);
+}
+
+// Function to traverse and add data across hexagrams
+export function traverseAndAddData(
+  hexagram: Hexagram,
+  key: string,
+  value: any,
+  depth: number = 1
+): void {
+  if (!hexagram || depth <= 0) return;
+
+  // Initialize the data object if it doesn't exist
+  if (!hexagram.data) {
+    hexagram.data = {};
+  }
+
+  // Add data to the current hexagram
+  hexagram.data[key] = value;
+
+  // Extract relationships
+  const {
+    inverse,
+    opposite,
+    nuclear,
+    mutual,
+    derivative,
+    shadow,
+    mirror,
+    rotational,
+    sequential,
+    complementaryTrigrams,
+    symmetrical,
+  } = hexagram.relationships;
+
+  // Example: Propagate data to inverse, opposite, and nuclear relationships
+  if (inverse) traverseAndAddData(inverse, `${key}_inverse`, value, depth - 1);
+  if (opposite)
+    traverseAndAddData(opposite, `${key}_opposite`, value, depth - 1);
+  if (nuclear) traverseAndAddData(nuclear, `${key}_nuclear`, value, depth - 1);
+  if (mutual) traverseAndAddData(mutual, `${key}_mutual`, value, depth - 1);
+  if (shadow) traverseAndAddData(shadow, `${key}_shadow`, value, depth - 1);
+  if (mirror) traverseAndAddData(mirror, `${key}_mirror`, value, depth - 1);
+  if (rotational)
+    traverseAndAddData(rotational, `${key}_rotational`, value, depth - 1);
+  if (sequential.next)
+    traverseAndAddData(sequential.next, `${key}_next`, value, depth - 1);
+  if (sequential.previous)
+    traverseAndAddData(
+      sequential.previous,
+      `${key}_previous`,
+      value,
+      depth - 1
+    );
+
+  // Propagate data to derivative and complementary trigrams relationships
+  derivative.forEach((relatedHexagram) =>
+    traverseAndAddData(relatedHexagram, `${key}_derivative`, value, depth - 1)
+  );
+  complementaryTrigrams.forEach((relatedHexagram) =>
+    traverseAndAddData(
+      relatedHexagram,
+      `${key}_complementary`,
+      value,
+      depth - 1
+    )
+  );
+  symmetrical.forEach((relatedHexagram) =>
+    traverseAndAddData(relatedHexagram, `${key}_symmetrical`, value, depth - 1)
+  );
+}
+
+export function gatherDataForInterpretation(hexagrams: Hexagram[]): string {
+  const hexagramsWithData = hexagrams.filter(
+    (h) => h.data && Object.keys(h.data).length > 0
+  );
+
+  if (hexagramsWithData.length === 0) {
+    return "No hexagrams have data to interpret.";
+  }
+
+  let interpretation = "Interpretation of Data-Carrying Hexagrams:\n";
+
+  for (const hexagram of hexagramsWithData) {
+    interpretation += `Hexagram ${hexagram.id} (${hexagram.name}):\n`;
+    for (const [key, value] of Object.entries(hexagram?.data || {})) {
+      interpretation += `  - ${key}: ${value}\n`;
+    }
+    interpretation += `\n`;
+  }
+
+  return interpretation;
 }

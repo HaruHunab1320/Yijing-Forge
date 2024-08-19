@@ -1,4 +1,4 @@
-import { Line } from "../types";
+import { Line, Trigram } from "../types";
 
 export const hexagramData: {
   id: number;
@@ -207,15 +207,71 @@ export const hexagramData: {
   },
 ];
 
-export const trigramUnicodeMap: { [key: string]: string } = {
-  "Qian (Heaven)": "\u2630", // ☰
-  "Kun (Earth)": "\u2637", // ☷
-  "Zhen (Thunder)": "\u2632", // ☳
-  "Kan (Water)": "\u2633", // ☴
-  "Gen (Mountain)": "\u2636", // ☶
-  "Xun (Wind)": "\u2635", // ☵
-  "Li (Fire)": "\u2634", // ☲
-  "Dui (Lake)": "\u2631", // ☱
+export const trigrams: { [key: string]: Trigram } = {
+  Qian: {
+    name: "Qian",
+    lines: ["Yang", "Yang", "Yang"],
+    element: "Metal",
+    direction: "Northwest",
+    characteristic: "Creative",
+    symbol: "\u2630",
+  },
+  Kun: {
+    name: "Kun",
+    lines: ["Yin", "Yin", "Yin"],
+    element: "Earth",
+    direction: "Southwest",
+    characteristic: "Receptive",
+    symbol: "\u2637",
+  },
+  Zhen: {
+    name: "Zhen",
+    lines: ["Yang", "Yin", "Yin"],
+    element: "Wood",
+    direction: "East",
+    characteristic: "Arousing",
+    symbol: "\u2632",
+  },
+  Kan: {
+    name: "Kan",
+    lines: ["Yin", "Yang", "Yin"],
+    element: "Water",
+    direction: "North",
+    characteristic: "Abysmal",
+    symbol: "\u2633",
+  },
+  Gen: {
+    name: "Gen",
+    lines: ["Yin", "Yin", "Yang"],
+    element: "Earth",
+    direction: "Northeast",
+    characteristic: "Stillness",
+    symbol: "\u2636",
+  },
+  Xun: {
+    name: "Xun",
+    lines: ["Yang", "Yang", "Yin"],
+    element: "Wood",
+    direction: "Southeast",
+    characteristic: "Gentle",
+    symbol: "\u2635",
+  },
+  Li: {
+    name: "Li",
+    lines: ["Yang", "Yin", "Yang"],
+    element: "Fire",
+    direction: "South",
+    characteristic: "Clinging",
+    symbol: "\u2634",
+  },
+  Dui: {
+    name: "Dui",
+    lines: ["Yin", "Yang", "Yang"],
+    element: "Metal",
+    direction: "West",
+    characteristic: "Joyous",
+    symbol: "\u2631",
+  },
 };
 
 export const binaryCrossoverPolarityOrder = [
