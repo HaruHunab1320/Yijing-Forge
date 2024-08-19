@@ -196,10 +196,23 @@ export function addDataToHexagram(
 }
 
 function getTrigramName(line1: Line, line2: Line, line3: Line): string {
-  // Example logic to return a trigram name based on the lines
-  if (line1 === "Yang" && line2 === "Yang" && line3 === "Yang") return "Heaven";
-  if (line1 === "Yin" && line2 === "Yin" && line3 === "Yin") return "Earth";
-  // Add other trigrams as needed
+  if (line1 === "Yang" && line2 === "Yang" && line3 === "Yang")
+    return "Qian (Heaven)";
+  if (line1 === "Yin" && line2 === "Yin" && line3 === "Yin")
+    return "Kun (Earth)";
+  if (line1 === "Yang" && line2 === "Yin" && line3 === "Yin")
+    return "Zhen (Thunder)";
+  if (line1 === "Yin" && line2 === "Yang" && line3 === "Yang")
+    return "Kan (Water)";
+  if (line1 === "Yin" && line2 === "Yin" && line3 === "Yang")
+    return "Gen (Mountain)";
+  if (line1 === "Yang" && line2 === "Yang" && line3 === "Yin")
+    return "Xun (Wind)";
+  if (line1 === "Yang" && line2 === "Yin" && line3 === "Yang")
+    return "Li (Fire)";
+  if (line1 === "Yin" && line2 === "Yang" && line3 === "Yin")
+    return "Dui (Lake)";
+
   return "Unknown";
 }
 

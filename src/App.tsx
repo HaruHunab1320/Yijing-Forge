@@ -1,14 +1,14 @@
 import React from "react";
+import "./tailwind.css";
 import { HexagramProvider } from "./providers/hexagramProvider";
 import HexagramGrid from "./components/HexagramGrid";
+import { binaryCrossoverPolarityOrder } from "./data";
 
 function App() {
   return (
-    <div className="App">
-      <HexagramProvider>
-        <HexagramGrid />
-      </HexagramProvider>
-    </div>
+    <HexagramProvider>
+      <HexagramGrid customOrder={binaryCrossoverPolarityOrder} />
+    </HexagramProvider>
   );
 }
 

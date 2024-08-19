@@ -1,74 +1,51 @@
+import { trigramUnicodeMap } from "../data";
 import { useHexagrams } from "../providers/hexagramProvider";
 import { Hexagram } from "../types";
+
+interface HexagramGridProps {
+  customOrder?: number[][]; // Optional custom order of hexagram IDs as 2D array
+}
 
 // Hexagram component to display each hexagram in the grid
 const HexagramCell: React.FC<{ hexagram: Hexagram }> = ({ hexagram }) => {
   return (
-    <div style={cellStyle}>
+    <div className="flex flex-col items-center justify-center border border-black p-2 text-center">
       <div>{hexagram.id}</div>
       <div>{hexagram.name}</div>
-      <div>
-        <div>{hexagram.upperTrigram.name}</div>
-        <div>{hexagram.lowerTrigram.name}</div>
+      <div className="flex flex-col">
+        <div>{trigramUnicodeMap[hexagram.upperTrigram.name]}</div>
+        <div>{trigramUnicodeMap[hexagram.lowerTrigram.name]}</div>
       </div>
     </div>
   );
 };
 
 // Main component to render the grid
-const HexagramGrid: React.FC = () => {
+const HexagramGrid: React.FC<HexagramGridProps> = ({ customOrder }) => {
   const { hexagrams } = useHexagrams();
   if (!hexagrams) {
     return null;
   }
-  const getHexagramByPosition = (row: number, col: number): Hexagram | null => {
-    const position = row * 8 + col;
-    return hexagrams[position] || null;
+
+  const getHexagramById = (id: number): Hexagram | null => {
+    return hexagrams.find((h) => h.id === id) || null;
   };
 
   return (
-    <div style={gridStyle}>
-      {Array.from({ length: 8 }).map((_, rowIndex) => (
-        <div key={rowIndex} style={rowStyle}>
-          {Array.from({ length: 8 }).map((_, colIndex) => {
-            const hexagram = getHexagramByPosition(rowIndex, colIndex);
-            return (
-              <HexagramCell
-                key={colIndex}
-                hexagram={hexagram || ({} as Hexagram)}
-              />
-            );
-          })}
-        </div>
-      ))}
+    <div className="grid grid-cols-8 gap-2 w-full h-full">
+      {customOrder?.map((row, rowIndex) =>
+        row.map((id, colIndex) => {
+          const hexagram = getHexagramById(id);
+          return (
+            <HexagramCell
+              key={`${rowIndex}-${colIndex}`}
+              hexagram={hexagram || ({} as Hexagram)}
+            />
+          );
+        })
+      )}
     </div>
   );
-};
-
-// Styles for the grid and cells
-const gridStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(8, 1fr)",
-  gap: "10px",
-  width: "100%",
-  height: "100%",
-};
-
-const rowStyle: React.CSSProperties = {
-  display: "flex",
-  width: "100%",
-};
-
-const cellStyle: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "1px solid black",
-  padding: "10px",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
 };
 
 export default HexagramGrid;

@@ -206,3 +206,25 @@ export const hexagramData: {
     lines: ["Yang", "Yang", "Yang", "Yin", "Yang", "Yang"],
   },
 ];
+
+export const trigramUnicodeMap: { [key: string]: string } = {
+  "Qian (Heaven)": "\u2630", // ☰
+  "Kun (Earth)": "\u2637", // ☷
+  "Zhen (Thunder)": "\u2632", // ☳
+  "Kan (Water)": "\u2633", // ☴
+  "Gen (Mountain)": "\u2636", // ☶
+  "Xun (Wind)": "\u2635", // ☵
+  "Li (Fire)": "\u2634", // ☲
+  "Dui (Lake)": "\u2631", // ☱
+};
+
+export const binaryCrossoverPolarityOrder = [
+  [16, 50, 9, 55, 11, 53, 14, 52],
+  [1, 63, 8, 58, 6, 60, 3, 61],
+  [64, 2, 57, 7, 59, 5, 62, 4],
+  [49, 15, 56, 10, 54, 12, 51, 13],
+  [48, 18, 41, 23, 43, 21, 46, 20],
+  [33, 31, 40, 26, 38, 28, 35, 29],
+  [32, 34, 25, 39, 27, 37, 30, 36],
+  [17, 47, 24, 42, 22, 44, 19, 45],
+];
